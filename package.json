@@ -5,8 +5,7 @@
   "author": "Manish Kumar",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "node index.test.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "express": "^4.16.1"
