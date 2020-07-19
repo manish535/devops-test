@@ -17,5 +17,6 @@ copy index.test.js .
 copy index.js .
 
 EXPOSE 8080
+EXPOSE 3000
 CMD [ "node", "index.test.js" ]
-# CMD [ "node", "index.js" ]
+CMD [ "node", "index.js" ]
