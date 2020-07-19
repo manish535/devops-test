@@ -9,10 +9,10 @@ pipeline {
    agent any
 
    stages {
-       
+
       stage('Cloning Git') {
          steps {
-            git branch: 'feature', url: 'https://github.com/manish535/deploy-container-ecs.git'
+            git branch: 'master', url: 'https://github.com/manish535/devops-test.git'
          }
       }
       stage('Building Image') {
@@ -20,6 +20,14 @@ pipeline {
               script {
                  docker.build registry + ":$BUILD_NUMBER"
                 }
+          }
+      }
+      stage('Publish') {
+           steps {
+              withDockerRegistry(credentialsId: 'docker-creds', url: '') {
+                sh 'docker push "$registry:$BUILD_NUMBER"'
+                
+            }
           }
       }
    }
