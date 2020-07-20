@@ -1,10 +1,25 @@
 ---
+- elb_target_group:
+    aws_access_key: AKIAR5JHB4V6VUQPQSM6
+    aws_secret_key: 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
+    name: tg-cogknit
+    region: ap-south-1
+    protocol: http
+    port: 80
+    vpc_id: vpc-864857ee
+    health_check_path: /
+    successful_response_codes: "200,250-260"
+    target_type: ip
+    state: present
+    wait_timeout: 200
+    wait: True
+
 - elb_application_lb:
     aws_access_key: AKIAR5JHB4V6VUQPQSM6
     aws_secret_key: 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
     region: ap-south-1
     scheme: internet-facing
-    name: myelb
+    name: alb-cogknit
     security_groups:
       - sg-05facd67
       - sg-09043bc00b78e2833
@@ -16,5 +31,5 @@
         Port: 80 # Required. The port on which the load balancer is listening.
         DefaultActions:
           - Type: forward # Required.
-            TargetGroupName: tg-cog # Required. The name of the target group
+            TargetGroupName: tg-cogknit # "{{ tg-cogknit }}" # Required. The name of the target group
     state: present
