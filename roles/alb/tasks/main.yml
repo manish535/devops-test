@@ -1,0 +1,20 @@
+- elb_application_lb:
+    name: cogALB
+    aws_access_key: AKIAR5JHB4V6VUQPQSM6
+    aws_secret_key: 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
+    region: ap-south-1
+    scheme: internet-facing
+    security_groups:
+      - sg-05facd67
+      - sg-09043bc00b78e2833
+    subnets:
+      - subnet-031e2e232002ce27a
+      - subnet-0e9f9947d55e3cdea
+    listeners:
+      - Protocol: HTTP # Required. The protocol for connections from clients to the load balancer (HTTP or HTTPS) (case-sensitive).
+        Port: 80 # Required. The port on which the load balancer is listening.
+        # The security policy that defines which ciphers and protocols are supported. The default is the current predefined security policy.
+        DefaultActions:
+          - Type: forward # Required.
+            TargetGroupName: # Required. The name of the target group
+    state: present

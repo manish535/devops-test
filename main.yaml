@@ -1,0 +1,4 @@
+---
+- hosts: localhost
+  roles:
+    - role: '/Users/vibhor/Documents/manish/interview/ansible/roles/alb/'
