@@ -18,15 +18,17 @@ pipeline {
       stage('Building Image') {
           steps {
               script {
-                 docker.build registry + ":$BUILD_NUMBER"
+                  echo "testing"
+                 //docker.build registry + ":$BUILD_NUMBER"
                 }
           }
       }
       stage('Publish') {
            steps {
-              withDockerRegistry(credentialsId: 'docker-creds', url: '') {
-                sh 'docker push "$registry:$BUILD_NUMBER"'
-                
+              withDockerRegistry(credentialsId: 'ecr:ap-south-1:aws_cred', url: 'https://131615286653.dkr.ecr.ap-south-1.amazonaws.com') {
+                sh 'docker build -t cogknit .'
+                sh 'docker tag cogknit:latest 131615286653.dkr.ecr.ap-south-1.amazonaws.com/cogknit":$BUILD_NUMBER"'
+                sh 'docker push 131615286653.dkr.ecr.ap-south-1.amazonaws.com/cogknit":$BUILD_NUMBER"'
             }
           }
       }

@@ -1,7 +1,7 @@
 ---
 - elb_target_group:
-    aws_access_key: AKIAR5JHB4V6VUQPQSM6
-    aws_secret_key: 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
+    aws_access_key: AKIAR5JHB4V66RNRV4Y2
+    aws_secret_key: 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
     name: tg-cogknit
     region: ap-south-1
     protocol: http
@@ -23,8 +23,8 @@
     var: tg_arn
 
 - elb_application_lb:
-    aws_access_key: AKIAR5JHB4V6VUQPQSM6
-    aws_secret_key: 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
+    aws_access_key: AKIAR5JHB4V66RNRV4Y2
+    aws_secret_key: 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
     region: ap-south-1
     scheme: internet-facing
     name: alb-cogknit

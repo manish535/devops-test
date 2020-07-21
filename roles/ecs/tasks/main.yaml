@@ -3,8 +3,8 @@
   ecs_taskdefinition:
     region: ap-south-1
     family: cogknit
-    aws_access_key: AKIAR5JHB4V6VUQPQSM6
-    aws_secret_key: 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
+    aws_access_key: AKIAR5JHB4V66RNRV4Y2
+    aws_secret_key: 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
     launch_type: FARGATE
     network_mode: awsvpc
     execution_role_arn: arn:aws:iam::131615286653:role/ecsTaskExecutionRole
@@ -14,13 +14,16 @@
     - name: cogknit
       cpu: 10
       essential: true
-      image: "131615286653.dkr.ecr.ap-south-1.amazonaws.com/cogknit:latest"
+      image: 131615286653.dkr.ecr.ap-south-1.amazonaws.com/cogknit:{{ tag }}
       memory: 300
       portMappings:
       - containerPort: 8080
         hostPort: 8080
     state: present
   register: td_out    
+
+- debug:
+    var: td_out
 
 - set_fact:
    td_family_name: "{{ td_out.taskdefinition.family }}"
@@ -29,8 +32,8 @@
     name: my-cluster
     state: present
     region: ap-south-1
-    aws_access_key: AKIAR5JHB4V6VUQPQSM6
-    aws_secret_key: 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
+    aws_access_key: AKIAR5JHB4V66RNRV4Y2
+    aws_secret_key: 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
   register: cluster_out
 
 - set_fact:
