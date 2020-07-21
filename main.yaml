@@ -1,4 +1,5 @@
 ---
 - hosts: localhost
   roles:
+    - role: 'roles/alb/'
     - role: 'roles/ecs/'

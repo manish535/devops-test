@@ -13,6 +13,14 @@
     state: present
     wait_timeout: 200
     wait: True
+  register: tg_out
+
+- set_fact:
+    tg_arn: "{{ tg_out.target_group_arn }}"
+    tg_name: "{{ tg_out.target_group_name}}"
+
+- debug:
+    var: tg_arn
 
 - elb_application_lb:
     aws_access_key: AKIAR5JHB4V6VUQPQSM6
@@ -20,6 +28,7 @@
     region: ap-south-1
     scheme: internet-facing
     name: alb-cogknit
+
     security_groups:
       - sg-05facd67
       - sg-09043bc00b78e2833
@@ -27,9 +36,10 @@
       - subnet-031e2e232002ce27a
       - subnet-0e9f9947d55e3cdea
     listeners:
-      - Protocol: HTTP # Required. The protocol for connections from clients to the load balancer (HTTP or HTTPS) (case-sensitive).
-        Port: 80 # Required. The port on which the load balancer is listening.
+      - Protocol: HTTP
+        Port: 80
         DefaultActions:
-          - Type: forward # Required.
-            TargetGroupName: tg-cogknit # "{{ tg-cogknit }}" # Required. The name of the target group
+          - Type: forward 
+            TargetGroupName: "{{ tg_name }}"
     state: present
+  register: alb_out

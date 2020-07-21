@@ -1,32 +1,63 @@
 ---
+- name: Create task definition
+  ecs_taskdefinition:
+    region: ap-south-1
+    family: cogknit
+    aws_access_key: AKIAR5JHB4V6VUQPQSM6
+    aws_secret_key: 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
+    launch_type: FARGATE
+    network_mode: awsvpc
+    execution_role_arn: arn:aws:iam::131615286653:role/ecsTaskExecutionRole
+    cpu: 256
+    memory: 512
+    containers:
+    - name: cogknit
+      cpu: 10
+      essential: true
+      image: "131615286653.dkr.ecr.ap-south-1.amazonaws.com/cogknit:latest"
+      memory: 300
+      portMappings:
+      - containerPort: 8080
+        hostPort: 8080
+    state: present
+  register: td_out    
+
+- set_fact:
+   td_family_name: "{{ td_out.taskdefinition.family }}"
+
 - ecs_cluster:
     name: my-cluster
     state: present
     region: ap-south-1
     aws_access_key: AKIAR5JHB4V6VUQPQSM6
     aws_secret_key: 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
+  register: cluster_out
+
+- set_fact:
+   clu_name: "{{ cluster_out.cluster.clusterName }}"
 
 - ecs_service:
     state: present
     name: my-service
-    cluster: my-cluster
-    task_definition: manish
+    cluster: "{{ clu_name }}"
+    task_definition: "{{ td_family_name }}"
+    region: ap-south-1
     desired_count: 1
     aws_access_key: AKIAR5JHB4V6VUQPQSM6
     aws_secret_key: 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
     launch_type: FARGATE
+    load_balancers: 
+      - containerName: 'cogknit'
+        containerPort: 8080
+        targetGroupArn: "{{ tg_arn }}"
     network_configuration:
       subnets:
-      - 
+      - subnet-031e2e232002ce27a
+      - subnet-0e9f9947d55e3cdea 
       security_groups:
-      - sg-aaaa1111
-      - my_security_group
+      - sg-05facd67
+      - sg-09043bc00b78e2833
+      assign_public_ip: yes
     deployment_configuration:
       minimum_healthy_percent: 75
       maximum_percent: 150
-    placement_constraints:
-      - type: memberOf
-        expression: 'attribute:flavor==test'
-    placement_strategy:
-      - type: binpack
-        field: memory
