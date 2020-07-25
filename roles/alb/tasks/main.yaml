@@ -1,12 +1,12 @@
 ---
 - elb_target_group:
-    aws_access_key: AKIAR5JHB4V66RNRV4Y2
-    aws_secret_key: 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
+    aws_access_key: "{{ ACCESS_KEY_ID }}"
+    aws_secret_key: "{{ SECRET_ACCESS_KEY }}"
     name: tg-cogknit
     region: ap-south-1
     protocol: http
     port: 80
-    vpc_id: vpc-864857ee
+    vpc_id: "{{ vpc_id }}"
     health_check_path: /
     successful_response_codes: "200,250-260"
     target_type: ip
@@ -22,19 +22,35 @@
 - debug:
     var: tg_arn
 
+- name: example using security group rule descriptions
+  ec2_group:
+    name: sg
+    description: sg with rule descriptions
+    vpc_id: "{{ vpc_id }}"
+    region: ap-south-1
+    rules:
+      - proto: tcp
+        ports:
+        - 80
+        - 8080
+        cidr_ip: 0.0.0.0/0
+        rule_desc: Allow all traffic
+  register: sg
+
+- set_fact:
+    sg: "{{ sg.group_id }}"
+
 - elb_application_lb:
-    aws_access_key: AKIAR5JHB4V66RNRV4Y2
-    aws_secret_key: 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
+    aws_access_key: "{{ ACCESS_KEY_ID }}"
+    aws_secret_key: "{{ SECRET_ACCESS_KEY }}"
     region: ap-south-1
     scheme: internet-facing
     name: alb-cogknit
-
     security_groups:
-      - sg-05facd67
-      - sg-09043bc00b78e2833
+      - "{{ sg }}"
     subnets:
-      - subnet-031e2e232002ce27a
-      - subnet-0e9f9947d55e3cdea
+      - "{{ pb_sub_1 }}"
+      - "{{ pb_sub_2 }}"
     listeners:
       - Protocol: HTTP
         Port: 80

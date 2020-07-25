@@ -1,0 +1,77 @@
+- name: create a VPC with default tenancy and a couple of tags
+  ec2_vpc_net:
+    aws_access_key: "{{ ACCESS_KEY_ID }}"
+    aws_secret_key: "{{ SECRET_ACCESS_KEY }}"
+    name: devops-test
+    cidr_block: 10.10.0.0/16
+    region: ap-south-1
+    tags:
+      module: devops-test
+  register: vpc_info
+
+- set_fact:
+   vpc_id: "{{ vpc_info.vpc.id }}"
+
+- name: Creating IGW and attaching to VPC
+  ec2_vpc_igw:
+    vpc_id: "{{ vpc_info.vpc.id }}"
+    region: ap-south-1
+    state: present
+  register: igw
+
+- set_fact:
+   igw: "{{ igw.gateway_id }}"
+
+- debug:
+    var: igw
+
+- name: Create subnet for database servers
+  ec2_vpc_subnet:
+    state: present
+    map_public: yes
+    region: ap-south-1
+    vpc_id: "{{ vpc_info.vpc.id }}"
+    az: ap-south-1a
+    cidr: 10.10.0.0/24
+    tags:
+      Name: PublicSubnet1
+  register: subnet1
+
+- set_fact:
+   pb_sub_1: "{{ subnet1.subnet.id }}"
+
+- debug:
+    var: pb_sub_1
+
+- name: Create subnet for database servers
+  ec2_vpc_subnet:
+    state: present
+    map_public: yes
+    region: ap-south-1
+    vpc_id: "{{ vpc_info.vpc.id }}"
+    az: ap-south-1c
+    cidr: 10.10.1.0/24
+    tags:
+      Name: PublicSubnet2
+  register: subnet2
+
+- set_fact:
+   pb_sub_2: "{{ subnet2.subnet.id }}"
+
+- debug:
+    var: pb_sub_2
+
+- name: Set up public subnet route table
+  ec2_vpc_route_table:
+    vpc_id: "{{ vpc_info.vpc.id }}"
+    region: ap-south-1
+    tags:
+      Name: Public
+    subnets:
+      - "{{ pb_sub_1 }}"
+      - "{{ pb_sub_2 }}"
+    routes:
+      - dest: 0.0.0.0/0
+        gateway_id: "{{ igw }}"
+  register: public_route_table
+

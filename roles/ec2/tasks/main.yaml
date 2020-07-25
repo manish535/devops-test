@@ -1,0 +1,28 @@
+- ec2_instance:
+    name: "devops-test"
+    aws_access_key: "{{ ACCESS_KEY_ID }}"
+    aws_secret_key: "{{ SECRET_ACCESS_KEY }}"
+    key_name: "manishdevopsinterview"
+    state: present
+    vpc_subnet_id: subnet-41659e28
+    instance_type: t2.small
+    security_group: sg-0bed19e6c6e501a0a
+    network:
+      assign_public_ip: true
+    image_id: ami-0732b62d310b80e97
+    tags:
+      Environment: Testing
+    user_data: |
+               #!/bin/sh
+               sudo yum install java-1.8.0-openjdk -y
+               sudo amazon-linux-extras install ansible2 -y
+               sudo amazon-linux-extras install docker -y
+               systemctl start docker
+               sudo yum install python3 -y
+               pip3 install boto3
+               yum install git -y
+               pip3 install --upgrade --user awscli
+               sudo mkdir -p /root/jenkins
+               sudo cd /root/jenkins
+               wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
+               sudo chmod +x jenkins.war

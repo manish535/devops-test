@@ -5,6 +5,4 @@
   vars_files:
     - vault-pass.yml 
   roles:
-    - role: 'roles/vpc/'
-    - role: 'roles/alb/'
-    - role: 'roles/ecs/'
+    - role: 'roles/ec2/'

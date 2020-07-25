@@ -1,20 +1,30 @@
 ---
+- name: ecr-repo
+  ecs_ecr: name=cogknit
+  register: repo
+
+- set_fact:
+   repo_uri: "{{ repo.repository.repositoryUri }}"
+
+- debug:
+    var: repo_uri
+
 - name: Create task definition
   ecs_taskdefinition:
     region: ap-south-1
     family: cogknit
-    aws_access_key: AKIAR5JHB4V66RNRV4Y2
-    aws_secret_key: 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
+    aws_access_key: "{{ ACCESS_KEY_ID }}"
+    aws_secret_key: "{{ SECRET_ACCESS_KEY }}"
     launch_type: FARGATE
     network_mode: awsvpc
-    execution_role_arn: arn:aws:iam::131615286653:role/ecsTaskExecutionRole
+    execution_role_arn: arn:aws:iam::789280659725:role/ecsTaskExecutionRole
     cpu: 256
     memory: 512
     containers:
     - name: cogknit
       cpu: 10
       essential: true
-      image: 131615286653.dkr.ecr.ap-south-1.amazonaws.com/cogknit:{{ tag }}
+      image: 789280659725.dkr.ecr.ap-south-1.amazonaws.com/cogknit:latest  #{{ repo_uri }}:latest  #:{{ tag }}
       memory: 300
       portMappings:
       - containerPort: 8080
@@ -32,8 +42,8 @@
     name: my-cluster
     state: present
     region: ap-south-1
-    aws_access_key: AKIAR5JHB4V66RNRV4Y2
-    aws_secret_key: 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
+    aws_access_key: "{{ ACCESS_KEY_ID }}"
+    aws_secret_key: "{{ SECRET_ACCESS_KEY }}"
   register: cluster_out
 
 - set_fact:
@@ -46,8 +56,8 @@
     task_definition: "{{ td_family_name }}"
     region: ap-south-1
     desired_count: 1
-    aws_access_key: AKIAR5JHB4V6VUQPQSM6
-    aws_secret_key: 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
+    aws_access_key: "{{ ACCESS_KEY_ID }}"
+    aws_secret_key: "{{ SECRET_ACCESS_KEY }}"
     launch_type: FARGATE
     load_balancers: 
       - containerName: 'cogknit'
@@ -55,11 +65,10 @@
         targetGroupArn: "{{ tg_arn }}"
     network_configuration:
       subnets:
-      - subnet-031e2e232002ce27a
-      - subnet-0e9f9947d55e3cdea 
+      - "{{ pb_sub_1 }}" 
+      - "{{ pb_sub_1 }}"
       security_groups:
-      - sg-05facd67
-      - sg-09043bc00b78e2833
+      - "{{ sg }}"
       assign_public_ip: yes
     deployment_configuration:
       minimum_healthy_percent: 75
