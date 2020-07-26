@@ -30,7 +30,7 @@ pipeline {
               script {
                   echo "$PWD"
                   sh 'cd "$WORKSPACE"'
-                  sh 'ansible-playbook main.yaml -e tag="$BUILD_NUMBER"'
+                  sh 'ansible-playbook main.yaml -e tag="$BUILD_NUMBER" --vault-password-file /root/.ansible_vault/.vault_pass'
                   echo "$PWD"
               }
           }

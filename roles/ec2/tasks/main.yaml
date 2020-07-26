@@ -26,3 +26,5 @@
                sudo cd /root/jenkins
                wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
                sudo chmod +x jenkins.war
+               sudo mkdir -p /root/.ansible_vault
+               sudo touch /root/.ansible_vault/.vault_pass
