@@ -24,7 +24,7 @@
     - name: cogknit
       cpu: 10
       essential: true
-      image: 789280659725.dkr.ecr.ap-south-1.amazonaws.com/cogknit:latest  #{{ repo_uri }}:latest  #:{{ tag }}
+      image: 789280659725.dkr.ecr.ap-south-1.amazonaws.com/cogknit:{{ tag }}
       memory: 300
       portMappings:
       - containerPort: 8080

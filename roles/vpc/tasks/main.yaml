@@ -25,7 +25,7 @@
 - debug:
     var: igw
 
-- name: Create subnet for database servers
+- name: Create subnet
   ec2_vpc_subnet:
     state: present
     map_public: yes
@@ -43,7 +43,7 @@
 - debug:
     var: pb_sub_1
 
-- name: Create subnet for database servers
+- name: Create subnet
   ec2_vpc_subnet:
     state: present
     map_public: yes
